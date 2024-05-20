@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Construtor de Páginas Web</title>
+    <link rel="stylesheet" href="styleStruture.css">
+</head>
+<body>
+    <div id="app">
+        <div id="shape-menu">
+            <div class="draggable shape" data-shape="square">Quadrado</div>
+            <div class="draggable shape" data-shape="circle">Círculo</div>
+            <div class="draggable shape" data-shape="triangle">Triângulo</div>
+        </div>
+        <div id="canvas">
+        </div>
+        <div id="properties-panel">
+            <h3>Propriedades</h3>
+            <form id="properties-form">
+                <label for="width">Largura:</label>
+                <input type="text" id="width" name="width"><br>
+                <label for="height">Altura:</label>
+                <input type="text" id="height" name="height"><br>
+                <label for="position-x">X (%):</label>
+                <input type="text" id="position-x" name="position-x"><br>
+                <label for="position-y">Y (%):</label>
+                <input type="text" id="position-y" name="position-y"><br>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
