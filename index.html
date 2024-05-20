@@ -1,27 +1,23 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Espera - Consultório de Imaginologia</title>
+    <title>Consultório - Sistema de Espera</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Sistema de Espera</h1>
-            <a href="chamada.html" class="botao-link">Ir para Página de Chamadas</a>
-        </header>
-        <main>
-            <div class="entrada-paciente">
-                <input type="text" id="nomePaciente" placeholder="Nome do Paciente">
-                <button id="botaoNormal" class="botao">Normal</button>
-                <button id="botaoPrioritario" class="botao">Prioritário</button>
-            </div>
-            <ul id="listaPacientes"></ul>
-            <button id="botaoChamar" class="botao">Chamar</button>
-        </main>
+    <div id="main-container">
+        <h1>Sistema de Espera - Consultório Imaginologia</h1>
+        <input type="text" id="patientNameInput" placeholder="Nome do Paciente">
+        <button id="btnNormal">Normal</button>
+        <button id="btnPrioritario">Prioritário</button>
+
+        <ul id="waitingList"></ul>
+
+        <button id="btnChamar">Chamar</button>
     </div>
-    <script src="script.js"></script>
+
+    <script src="main.js"></script>
 </body>
 </html>
