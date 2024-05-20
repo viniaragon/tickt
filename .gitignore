@@ -1,0 +1,26 @@
+# Visual Studio
+.vs/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.ncrunchsolution
+*_i.c
+*_p.c
+*.ilk
+*.log
+*.obj
+*.pch
+*.pdb
+*.ipch
+*.aps
+*.ncb
+*.opendb
+*.tlog
+*.sdf
+*.sqlite
+*.vcxproj.user
+*.vcxproj.filters
+.DS_Store
+Thumbs.db

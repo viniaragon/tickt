@@ -1,47 +1,20 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Sistema de Chamada</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f3f3f3;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        h1 {
-            color: #333;
-        }
-        .ticket {
-            font-size: 2em;
-            margin: 10px 0;
-        }
-    </style>
-    <script>
-        function announcePatient(patient) {
-            const utterance = new SpeechSynthesisUtterance(`${patient.ticket}, ${patient.name}`);
-            utterance.lang = 'pt-BR';
-            speechSynthesis.speak(utterance);
-        }
-
-        window.addEventListener('load', () => {
-            const patientData = sessionStorage.getItem('nextPatient');
-            if (patientData) {
-                const patient = JSON.parse(patientData);
-                document.getElementById('patientName').textContent = patient.name;
-                document.getElementById('ticketNumber').textContent = patient.ticket;
-                announcePatient(patient);
-            }
-        });
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chamadas - Consultório de Imaginologia</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Paciente Chamado</h1>
-    <div class="ticket" id="ticketNumber"></div>
-    <h2 id="patientName"></h2>
+    <div class="container">
+        <header>
+            <h1>Chamadas</h1>
+        </header>
+        <main>
+            <div id="chamadaAtual" class="chamada-atual"></div>
+        </main>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>

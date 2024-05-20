@@ -1,119 +1,27 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Sistema de Espera - Principal</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f3f3f3;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-        }
-        #patientInput, #callButton {
-            display: block;
-            margin: 10px auto;
-            padding: 10px;
-            width: 300px;
-            max-width: 100%;
-        }
-        .button {
-            margin: 5px;
-            padding: 10px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-        }
-        .normal {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .priority {
-            background-color: #f44336;
-            color: white;
-        }
-        #callButton {
-            background-color: #2196F3;
-            color: white;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .patient {
-            margin: 5px;
-            padding: 10px;
-            border-radius: 5px;
-            color: white;
-        }
-        .normal-patient {
-            background-color: #2196F3;
-        }
-        .priority-patient {
-            background-color: #f44336;
-        }
-        .highlight {
-            border: 2px solid #FFD700;
-        }
-    </style>
-    <script>
-        let patientQueue = [];
-        let currentTicket = 1;
-
-        function addPatient(priority) {
-            const patientInput = document.getElementById('patientInput');
-            const patientName = patientInput.value.trim();
-            if (patientName) {
-                const identifier = priority ? 'P' : 'N';
-                const patient = {
-                    ticket: identifier + currentTicket,
-                    name: patientName,
-                    priority: priority
-                };
-                patientQueue.push(patient);
-                currentTicket++;
-                updatePatientList();
-                patientInput.value = '';
-            }
-        }
-
-        function updatePatientList() {
-            const patientList = document.getElementById('patientList');
-            patientList.innerHTML = '';
-
-            patientQueue.forEach((patient, index) => {
-                const patientElement = document.createElement('li');
-                patientElement.className = `patient ${patient.priority ? 'priority-patient' : 'normal-patient'} ${index === 0 ? 'highlight' : ''}`;
-                patientElement.textContent = `${patient.ticket} - ${patient.name}`;
-                patientList.appendChild(patientElement);
-            });
-        }
-
-        function callNextPatient() {
-            if (patientQueue.length > 0) {
-                const nextPatient = patientQueue.shift();
-                updatePatientList();
-                sessionStorage.setItem('nextPatient', JSON.stringify(nextPatient));
-                window.open('chamada.html', '_blank');
-            }
-        }
-
-        window.addEventListener('load', () => {
-            document.getElementById('normalButton').addEventListener('click', () => addPatient(false));
-            document.getElementById('priorityButton').addEventListener('click', () => addPatient(true));
-            document.getElementById('callButton').addEventListener('click', callNextPatient);
-        });
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Espera - Consultório de Imaginologia</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Sistema de Espera - Principal</h1>
-    <input type="text" id="patientInput" placeholder="Nome do Paciente">
-    <button class="button normal" id="normalButton">Normal</button>
-    <button class="button priority" id="priorityButton">Prioritário</button>
-    <ul id="patientList"></ul>
-    <button class="button" id="callButton">Chamar</button>
+    <div class="container">
+        <header>
+            <h1>Sistema de Espera</h1>
+            <a href="chamada.html" class="botao-link">Ir para Página de Chamadas</a>
+        </header>
+        <main>
+            <div class="entrada-paciente">
+                <input type="text" id="nomePaciente" placeholder="Nome do Paciente">
+                <button id="botaoNormal" class="botao">Normal</button>
+                <button id="botaoPrioritario" class="botao">Prioritário</button>
+            </div>
+            <ul id="listaPacientes"></ul>
+            <button id="botaoChamar" class="botao">Chamar</button>
+        </main>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
