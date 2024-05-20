@@ -48,13 +48,9 @@ function chamarPaciente() {
 }
 
 function enviarParaChamada(paciente) {
-    if (chamadaAtualDiv) {
-        chamadaAtualDiv.textContent = `${paciente.tipo}${paciente.ticket} - ${paciente.nome}`;
-        falar(`Paciente ${paciente.tipo}${paciente.ticket} - ${paciente.nome}`);
-    } else {
-        sessionStorage.setItem('chamadaAtual', JSON.stringify(paciente));
-        window.open('chamada.html', '_blank');
-    }
+    // Armazena os dados do paciente atual no localStorage
+    localStorage.setItem('chamadaAtual', JSON.stringify(paciente));
+    window.open('chamada.html', '_blank');
 }
 
 function falar(texto) {
@@ -69,7 +65,7 @@ botaoChamar.addEventListener('click', chamarPaciente);
 
 // Carregar chamada atual na página de chamadas
 if (chamadaAtualDiv) {
-    const pacienteAtual = JSON.parse(sessionStorage.getItem('chamadaAtual'));
+    const pacienteAtual = JSON.parse(localStorage.getItem('chamadaAtual'));
     if (pacienteAtual) {
         chamadaAtualDiv.textContent = `${pacienteAtual.tipo}${pacienteAtual.ticket} - ${pacienteAtual.nome}`;
         falar(`Paciente ${pacienteAtual.tipo}${pacienteAtual.ticket} - ${pacienteAtual.nome}`);
