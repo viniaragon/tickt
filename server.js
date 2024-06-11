@@ -12,14 +12,14 @@ const dataFilePath = path.join(__dirname, 'data.json');
 
 function loadData() {
     if (fs.existsSync(dataFilePath)) {
-        const data = fs.readFileSync(dataFilePath);
+        const data = fs.readFileSync(dataFilePath, 'utf-8');
         return JSON.parse(data);
     }
     return { items: [], selected: null };
 }
 
 function saveData(data) {
-    fs.writeFileSync(dataFilePath, JSON.stringify(data));
+    fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 4)); // Formatação com espaçamento de 4
 }
 
 let data = loadData();
@@ -47,10 +47,10 @@ wss.on('connection', function connection(ws) {
 
         saveData(data);
 
-        // Reenvia a mensagem para todos os clientes conectados, incluindo o cliente que fez a alteração
+        // Envia a lista completa para todos os clientes conectados
         wss.clients.forEach(function each(client) {
             if (client.readyState === WebSocket.OPEN) {
-                client.send(message);
+                client.send(JSON.stringify({ type: 'update', data }));
             }
         });
     });

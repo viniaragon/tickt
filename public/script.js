@@ -6,19 +6,39 @@ document.addEventListener("DOMContentLoaded", function() {
     const listContent = document.querySelector('.list-content');
     let selectedElement = null;
 
-    const ws = new WebSocket('ws://localhost:8080');
+    function connectWebSocket() {
+        const ws = new WebSocket('ws://localhost:8080');
 
-    ws.onmessage = function(event) {
-        if (typeof event.data === 'string') {
-            processMessage(event.data);
-        } else {
-            const reader = new FileReader();
-            reader.onload = function() {
-                processMessage(reader.result);
-            };
-            reader.readAsText(event.data);
-        }
-    };
+        ws.onopen = function() {
+            console.log('Conexão WebSocket estabelecida.');
+        };
+
+        ws.onmessage = function(event) {
+            if (typeof event.data === 'string') {
+                processMessage(event.data);
+            } else {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    processMessage(reader.result);
+                };
+                reader.readAsText(event.data);
+            }
+        };
+
+        ws.onclose = function() {
+            console.log('Conexão WebSocket fechada. Tentando reconectar em 1 segundo...');
+            setTimeout(connectWebSocket, 1000);
+        };
+
+        ws.onerror = function(error) {
+            console.log('Erro no WebSocket:', error);
+            ws.close();
+        };
+
+        return ws;
+    }
+
+    let ws = connectWebSocket();
 
     function processMessage(data) {
         const message = JSON.parse(data);
@@ -26,8 +46,8 @@ document.addEventListener("DOMContentLoaded", function() {
             case 'init':
                 initializeList(message.data);
                 break;
-            case 'add':
-                addListItem(message.item, message.priority, false);
+            case 'update':
+                updateList(message.data);
                 break;
             case 'select':
                 selectListItem(message.index, false);
@@ -53,11 +73,16 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        ws.send(JSON.stringify({ type: 'add', item: inputValue, priority }));
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: 'add', item: inputValue, priority }));
+        } else {
+            console.log('WebSocket não está aberto. Tentando reconectar...');
+            ws = connectWebSocket();
+        }
         inputField.value = '';
     }
 
-    function addListItem(text, priority, sendToServer) {
+    function addListItem(text, priority) {
         const listItem = document.createElement('li');
         listItem.textContent = text;
         listItem.setAttribute('class', priority);
@@ -91,7 +116,12 @@ document.addEventListener("DOMContentLoaded", function() {
         selectedElement.classList.add('selected');
 
         if (sendToServer) {
-            ws.send(JSON.stringify({ type: 'select', index }));
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'select', index }));
+            } else {
+                console.log('WebSocket não está aberto. Tentando reconectar...');
+                ws = connectWebSocket();
+            }
         }
     }
 
@@ -101,14 +131,34 @@ document.addEventListener("DOMContentLoaded", function() {
             selectedElement = null;
 
             if (sendToServer) {
-                ws.send(JSON.stringify({ type: 'deselect' }));
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ type: 'deselect' }));
+                } else {
+                    console.log('WebSocket não está aberto. Tentando reconectar...');
+                    ws = connectWebSocket();
+                }
             }
         }
     }
 
     function initializeList(data) {
+        // Limpar lista existente antes de inicializar
+        listPacientes.innerHTML = '';
         data.items.forEach((item) => {
-            addListItem(item.text, item.priority, false);
+            addListItem(item.text, item.priority);
+        });
+        if (data.selected !== null) {
+            selectListItem(data.selected, false);
+        }
+    }
+
+    function updateList(data) {
+        // Verificação se o item já existe na lista antes de adicionar
+        const existingItems = Array.from(listPacientes.children).map(li => li.textContent);
+        data.items.forEach((item) => {
+            if (!existingItems.includes(item.text)) {
+                addListItem(item.text, item.priority);
+            }
         });
         if (data.selected !== null) {
             selectListItem(data.selected, false);
