@@ -5,22 +5,29 @@ document.addEventListener("DOMContentLoaded", function() {
     const listPacientes = document.getElementById('listPacientes');
     const listContent = document.querySelector('.list-content');
     let selectedElement = null;
+    let isLocalChange = false;
 
     const ws = new WebSocket('ws://localhost:8080');
 
     ws.onmessage = function(event) {
-        const message = JSON.parse(event.data);
-        switch (message.type) {
-            case 'add':
-                addListItem(message.item, message.priority, false);
-                break;
-            case 'select':
-                selectListItem(message.index, false);
-                break;
-            case 'deselect':
-                deselectListItem(false);
-                break;
-        }
+        const reader = new FileReader();
+        reader.onload = function() {
+            const message = JSON.parse(reader.result);
+            if (message.origin !== 'local') {
+                switch (message.type) {
+                    case 'add':
+                        addListItem(message.item, message.priority, false);
+                        break;
+                    case 'select':
+                        selectListItem(message.index, false);
+                        break;
+                    case 'deselect':
+                        deselectListItem(false);
+                        break;
+                }
+            }
+        };
+        reader.readAsText(event.data);
     };
 
     normalButton.addEventListener('click', function() {
@@ -38,6 +45,7 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
+        isLocalChange = true;
         addListItem(inputValue, priority, true);
         inputField.value = '';
     }
@@ -49,8 +57,9 @@ document.addEventListener("DOMContentLoaded", function() {
         listItem.addEventListener('click', toggleSelect);
         listPacientes.appendChild(listItem);
 
-        if (sendToServer) {
-            ws.send(JSON.stringify({ type: 'add', item: text, priority }));
+        if (sendToServer && isLocalChange) {
+            isLocalChange = false;
+            ws.send(JSON.stringify({ type: 'add', item: text, priority, origin: 'local' }));
         }
     }
 
@@ -80,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
         selectedElement.classList.add('selected');
 
         if (sendToServer) {
-            ws.send(JSON.stringify({ type: 'select', index }));
+            ws.send(JSON.stringify({ type: 'select', index, origin: 'local' }));
         }
     }
 
@@ -90,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function() {
             selectedElement = null;
 
             if (sendToServer) {
-                ws.send(JSON.stringify({ type: 'deselect' }));
+                ws.send(JSON.stringify({ type: 'deselect', origin: 'local' }));
             }
         }
     }
