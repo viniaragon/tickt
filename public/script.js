@@ -95,16 +95,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (selectedElement) {
             selectedElement.classList.remove('selected');
-            deselectListItem(true);
+            if (selectedElement === listItem) {
+                selectedElement = null;
+                deselectListItem(true);
+                return;
+            }
         }
 
-        if (selectedElement === listItem) {
-            selectedElement = null;
-        } else {
-            listItem.classList.add('selected');
-            selectedElement = listItem;
-            selectListItem(Array.from(listPacientes.children).indexOf(listItem), true);
-        }
+        listItem.classList.add('selected');
+        selectedElement = listItem;
+        selectListItem(Array.from(listPacientes.children).indexOf(listItem), true);
         event.stopPropagation(); // Impede que o evento clique se propague para o div .list-content
     }
 
