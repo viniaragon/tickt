@@ -1,17 +1,13 @@
 {
     "items": [
         {
-            "text": "Pepe",
+            "text": "Carlos",
             "priority": "normal"
         },
         {
-            "text": "Minina",
-            "priority": "prioridade"
-        },
-        {
-            "text": "Carlos Alberto Antonio Da Silva Maria",
-            "priority": "normal"
+            "text": "Maria Joaquina",
+            "priority": "normal selected"
         }
     ],
-    "selected": 2
+    "selected": 1
 }

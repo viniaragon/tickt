@@ -43,6 +43,9 @@ wss.on('connection', function connection(ws) {
             case 'deselect':
                 data.selected = null;
                 break;
+            case 'reorder':
+                data.items = parsedMessage.items;
+                break;
         }
 
         saveData(data);

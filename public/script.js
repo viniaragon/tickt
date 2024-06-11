@@ -153,28 +153,41 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function updateList(data) {
-        // Verificação se o item já existe na lista antes de adicionar
-        const existingItems = Array.from(listPacientes.children).map(li => li.textContent);
+        // Limpar lista existente antes de atualizar
+        listPacientes.innerHTML = '';
         data.items.forEach((item) => {
-            if (!existingItems.includes(item.text)) {
-                addListItem(item.text, item.priority);
-            }
+            addListItem(item.text, item.priority);
         });
         if (data.selected !== null) {
             selectListItem(data.selected, false);
         }
     }
 
+    // Inicializa o SortableJS com o evento de atualização da ordem
+    new Sortable(listPacientes, {
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        onEnd: function(evt) {
+            const order = Array.from(listPacientes.children).map((item) => {
+                return {
+                    text: item.textContent,
+                    priority: item.getAttribute('class')
+                };
+            });
+
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'reorder', items: order }));
+            } else {
+                console.log('WebSocket não está aberto. Tentando reconectar...');
+                ws = connectWebSocket();
+            }
+        }
+    });
+
     listContent.addEventListener('click', function(event) {
         if (!event.target.matches('li')) {
             deselectListItem(true);
         }
-    });
-
-    // Inicializa o SortableJS
-    new Sortable(listPacientes, {
-        animation: 150,
-        ghostClass: 'sortable-ghost'
     });
 
     // Adiciona o evento de clique aos itens já existentes na lista (se necessário)
