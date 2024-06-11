@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        addListItem(inputValue, priority, true);
+        ws.send(JSON.stringify({ type: 'add', item: inputValue, priority }));
         inputField.value = '';
     }
 
@@ -63,10 +63,6 @@ document.addEventListener("DOMContentLoaded", function() {
         listItem.setAttribute('class', priority);
         listItem.addEventListener('click', toggleSelect);
         listPacientes.appendChild(listItem);
-
-        if (sendToServer) {
-            ws.send(JSON.stringify({ type: 'add', item: text, priority }));
-        }
     }
 
     function toggleSelect(event) {
