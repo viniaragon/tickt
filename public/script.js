@@ -5,30 +5,38 @@ document.addEventListener("DOMContentLoaded", function() {
     const listPacientes = document.getElementById('listPacientes');
     const listContent = document.querySelector('.list-content');
     let selectedElement = null;
-    let isLocalChange = false;
 
     const ws = new WebSocket('ws://localhost:8080');
 
     ws.onmessage = function(event) {
-        const reader = new FileReader();
-        reader.onload = function() {
-            const message = JSON.parse(reader.result);
-            if (message.origin !== 'local') {
-                switch (message.type) {
-                    case 'add':
-                        addListItem(message.item, message.priority, false);
-                        break;
-                    case 'select':
-                        selectListItem(message.index, false);
-                        break;
-                    case 'deselect':
-                        deselectListItem(false);
-                        break;
-                }
-            }
-        };
-        reader.readAsText(event.data);
+        if (typeof event.data === 'string') {
+            processMessage(event.data);
+        } else {
+            const reader = new FileReader();
+            reader.onload = function() {
+                processMessage(reader.result);
+            };
+            reader.readAsText(event.data);
+        }
     };
+
+    function processMessage(data) {
+        const message = JSON.parse(data);
+        switch (message.type) {
+            case 'init':
+                initializeList(message.data);
+                break;
+            case 'add':
+                addListItem(message.item, message.priority, false);
+                break;
+            case 'select':
+                selectListItem(message.index, false);
+                break;
+            case 'deselect':
+                deselectListItem(false);
+                break;
+        }
+    }
 
     normalButton.addEventListener('click', function() {
         addItem('normal');
@@ -45,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        isLocalChange = true;
         addListItem(inputValue, priority, true);
         inputField.value = '';
     }
@@ -57,9 +64,8 @@ document.addEventListener("DOMContentLoaded", function() {
         listItem.addEventListener('click', toggleSelect);
         listPacientes.appendChild(listItem);
 
-        if (sendToServer && isLocalChange) {
-            isLocalChange = false;
-            ws.send(JSON.stringify({ type: 'add', item: text, priority, origin: 'local' }));
+        if (sendToServer) {
+            ws.send(JSON.stringify({ type: 'add', item: text, priority }));
         }
     }
 
@@ -89,7 +95,7 @@ document.addEventListener("DOMContentLoaded", function() {
         selectedElement.classList.add('selected');
 
         if (sendToServer) {
-            ws.send(JSON.stringify({ type: 'select', index, origin: 'local' }));
+            ws.send(JSON.stringify({ type: 'select', index }));
         }
     }
 
@@ -99,8 +105,17 @@ document.addEventListener("DOMContentLoaded", function() {
             selectedElement = null;
 
             if (sendToServer) {
-                ws.send(JSON.stringify({ type: 'deselect', origin: 'local' }));
+                ws.send(JSON.stringify({ type: 'deselect' }));
             }
+        }
+    }
+
+    function initializeList(data) {
+        data.items.forEach((item) => {
+            addListItem(item.text, item.priority, false);
+        });
+        if (data.selected !== null) {
+            selectListItem(data.selected, false);
         }
     }
 
@@ -109,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function() {
             deselectListItem(true);
         }
     });
-    
+
     // Inicializa o SortableJS
     new Sortable(listPacientes, {
         animation: 150,
