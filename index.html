@@ -1,23 +1,37 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultório - Sistema de Espera</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Lista de Pacientes</title>
+    <link rel="stylesheet" href="styles.css" type="text/css">
 </head>
 <body>
-    <div id="main-container">
-        <h1>Sistema de Espera - Consultório Imaginologia</h1>
-        <input type="text" id="patientNameInput" placeholder="Nome do Paciente">
-        <button id="btnNormal">Normal</button>
-        <button id="btnPrioritario">Prioritário</button>
-
-        <ul id="waitingList"></ul>
-
-        <button id="btnChamar">Chamar</button>
+    <div class="container">
+        <button class="navigation-button">Ir para pagina de Chamadas</button>
+        <div class="input-section">
+            <input type="text" placeholder="Input" class="input-field" id="inputField">
+            <div class="buttons-section">
+                <button class="normal-button" id="normalButton">Normal</button>
+                <button class="priority-button" id="priorityButton">Prioritário</button>
+            </div>
+        </div>
+        <div class="list-section">
+            <div class="list-header">Lista de Pacientes em Espera</div>
+            <div class="list-content">
+                <ul class="list-pacientes" id="listPacientes">
+                    <li>carlos</li>
+                    <li>carlos</li>
+                    <li>carlos</li>
+                    <li>carlos</li>
+                </ul>
+            </div>
+        </div>
+        <div class="margin-bottom"> 
+            <button class="call-patient-button">Chamar paciente</button>
+        </div>        
     </div>
-
-    <script src="main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
