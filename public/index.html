@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <button class="navigation-button">Ir para pagina de Chamadas</button>
+        <button class="navigation-button" id="navigationButton" onclick="openChamadaPage()">Ir para pagina de Chamadas</button>
         <div class="input-section">
             <input type="text" placeholder="Input" class="input-field" id="inputField">
             <div class="buttons-section">
@@ -28,8 +28,8 @@
             </div>
         </div>
         <div class="margin-bottom"> 
-            <button class="call-patient-button">Chamar paciente</button>
-            
+            <button class="delet-patient-button" id="deletPatientButton">Excluir Paciente</button>
+            <button class="call-patient-button">Chamar Paciente</button>            
         </div>  
         <div class="container-reset-button"> 
             <button class="reset-button" id="resetButton">Reiniciar</button>
@@ -37,5 +37,10 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="script.js"></script>
+    <script>
+        function openChamadaPage() {
+            window.open('chamada.html', '_blank');
+        }
+    </script>
 </body>
 </html>

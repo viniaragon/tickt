@@ -5,7 +5,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const inputField = document.getElementById('inputField');
     const listPacientes = document.getElementById('listPacientes');
     const listContent = document.querySelector('.list-content');
+    const deletPatientButton = document.getElementById('deletPatientButton');
+    const callPatientButton = document.querySelector('.call-patient-button');
     let selectedElement = null;
+    
+    // Contadores
+    let contadorOrdenGeral = 0;
+    let contadorOrdenNormal = 0;
+    let contadorOrdemPriority = 0;
 
     function connectWebSocket() {
         const ws = new WebSocket('ws://192.168.0.4:8080'); // Substitua <IP_DA_MAQUINA> pelo IP da sua máquina
@@ -87,6 +94,40 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    deletPatientButton.addEventListener('click', function() {
+        if (selectedElement) {
+            const itemText = selectedElement.textContent;
+            selectedElement.remove();
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'remove', item: itemText }));
+            } else {
+                console.log('WebSocket não está aberto. Tentando reconectar...');
+                ws = connectWebSocket();
+                ws.send(JSON.stringify({ type: 'remove', item: itemText }));
+            }
+            selectedElement = null; // Resetar o elemento selecionado
+        } else {
+            alert('Nenhum paciente selecionado para exclusão.');
+        }
+    });
+
+    callPatientButton.addEventListener('click', function() {
+        if (selectedElement) {
+            const selectedPatient = selectedElement.textContent;
+            const welcomeMessage = "Por favor, dirija-se à sala 1"; // Mensagem de boas-vindas fixa
+            
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'call', patient: selectedPatient, message: welcomeMessage }));
+            } else {
+                console.log('WebSocket não está aberto. Tentando reconectar...');
+                ws = connectWebSocket();
+                ws.send(JSON.stringify({ type: 'call', patient: selectedPatient, message: welcomeMessage }));
+            }
+        } else {
+            alert('Nenhum paciente selecionado para chamar.');
+        }
+    });
+
     function addItem(priority) {
         const inputValue = inputField.value.trim();
         if (inputValue === '') {
@@ -94,8 +135,23 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
+        let contadorAtual;
+        let prefixo;
+        if (priority === 'normal') {
+            contadorOrdenNormal++;
+            contadorAtual = contadorOrdenNormal;
+            prefixo = 'N';
+        } else {
+            contadorOrdemPriority++;
+            contadorAtual = contadorOrdemPriority;
+            prefixo = 'P';
+        }
+
+        contadorOrdenGeral++;
+        const itemText = `${contadorOrdenGeral} ${prefixo}${contadorAtual} ${inputValue}`;
+
         if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({ type: 'add', item: inputValue, priority }));
+            ws.send(JSON.stringify({ type: 'add', item: itemText, priority }));
         } else {
             console.log('WebSocket não está aberto. Tentando reconectar...');
             ws = connectWebSocket();
@@ -183,14 +239,32 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function updateList(data) {
-        // Limpar lista existente antes de atualizar
         listPacientes.innerHTML = '';
         selectedElement = null;  // Resetar o elemento selecionado
-
+    
+        contadorOrdenGeral = 0;
+        contadorOrdenNormal = 0;
+        contadorOrdemPriority = 0;
+    
         data.items.forEach((item) => {
-            addListItem(item.text, item.priority);
+            contadorOrdenGeral++;
+            let prefixo, contadorAtual;
+    
+            if (item.priority.includes('normal')) {
+                contadorOrdenNormal++;
+                contadorAtual = contadorOrdenNormal;
+                prefixo = 'N';
+            } else {
+                contadorOrdemPriority++;
+                contadorAtual = contadorOrdemPriority;
+                prefixo = 'P';
+            }
+    
+            const itemText = `${contadorOrdenGeral} ${prefixo}${contadorAtual} ${item.text.split(' ').slice(2).join(' ')}`;
+            item.priority = item.priority.replace(' selected', '');
+            addListItem(itemText, item.priority);
         });
-
+    
         if (data.selected !== null && data.selected < data.items.length) {
             selectListItem(data.selected, false);
         } else {
@@ -201,6 +275,10 @@ document.addEventListener("DOMContentLoaded", function() {
     function resetList() {
         listPacientes.innerHTML = '';
         selectedElement = null;
+        // Resetar os contadores
+        contadorOrdenGeral = 0;
+        contadorOrdenNormal = 0;
+        contadorOrdemPriority = 0;
     }
 
     function updateSelectionOnServer(index) {
@@ -222,7 +300,6 @@ document.addEventListener("DOMContentLoaded", function() {
             const listRect = listContent.getBoundingClientRect();
             const margin = 10; // Margem de erro para considerar o item fora do contêiner
     
-            // Verifica se o item está fora do contêiner .list-content com margem de erro
             if (
                 itemRect.top < listRect.top - margin ||
                 itemRect.left < listRect.left - margin ||
@@ -249,6 +326,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     };
                 });
     
+                // Recalcula os índices após a reorganização
+                recalculateIndices(order);
+    
                 if (ws.readyState === WebSocket.OPEN) {
                     ws.send(JSON.stringify({ type: 'reorder', items: order }));
                 } else {
@@ -265,6 +345,37 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     });
+    
+    function recalculateIndices(items) {
+        let contadorOrdenGeral = 0;
+        let contadorOrdenNormal = 0;
+        let contadorOrdemPriority = 0;
+    
+        items.forEach((item, index) => {
+            contadorOrdenGeral++;
+            let prefixo, contadorAtual;
+    
+            if (item.priority.includes('normal')) {
+                contadorOrdenNormal++;
+                contadorAtual = contadorOrdenNormal;
+                prefixo = 'N';
+            } else {
+                contadorOrdemPriority++;
+                contadorAtual = contadorOrdemPriority;
+                prefixo = 'P';
+            }
+    
+            item.text = `${contadorOrdenGeral} ${prefixo}${contadorAtual} ${item.text.split(' ').slice(2).join(' ')}`;
+            // Remove 'selected' class if present
+            item.priority = item.priority.replace(' selected', '');
+        });
+    
+        // Atualiza os itens na lista
+        listPacientes.innerHTML = '';
+        items.forEach((item) => {
+            addListItem(item.text, item.priority);
+        });
+    }
 
     // Evento de arrastar para monitorar o início do arrasto
     listContent.addEventListener('dragstart', function(event) {

@@ -7,7 +7,8 @@
 body, html {
     height: 100%;
     width: 100%;
-    font-family: Arial, sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f4f4f4;
 }
 
 .container {
@@ -16,20 +17,21 @@ body, html {
     align-items: center;
     height: 100%;
     width: 100%;
-    background-color: #808080;
+    background-color: #ffffff;
     overflow-y: auto;
-    padding-top: 5px; /* Adiciona um padding superior para garantir espaço para o botão */
+    padding-top: 5px;
 }
 
 .navigation-button {
     align-self: flex-start;
     margin-bottom: 10px;
-    background-color: #d3d3d3;
+    background-color: #005f6b; /* Azul escuro */
+    color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 20px;
     cursor: pointer;
-    margin-top: 20px; /* Adiciona um margin-top para posicionar o botão abaixo do padding */
+    margin-top: 20px;
 }
 
 .input-section {
@@ -47,7 +49,7 @@ body, html {
     flex-grow: 0.75;
     padding: 10px;
     border-radius: 20px;
-    border: 1px solid #000;
+    border: 1px solid #cccccc; /* Cinza claro */
     margin-right: 10px;
 }
 
@@ -57,8 +59,9 @@ body, html {
 }
 
 .normal-button, .priority-button {
-    background-color: #fff;
-    border: 1px solid #000;
+    background-color: #005f6b; /* Azul escuro */
+    color: white;
+    border: none;
     padding: 10px 30px;
     border-radius: 20px;
     cursor: pointer;
@@ -66,22 +69,25 @@ body, html {
 }
 
 .priority-button {
-    background-color: #f8d7da;
+    background-color: #ff6b6b; /* Vermelho suave */
 }
 
 .list-section {
-    background-color: #e0e0e0;
+    background-color: #ffffff; /* Branco */
     border-radius: 10px;
     width: 35%;
     max-width: 1200px;
     min-width: 350px;
+    max-height: 500px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .list-header {
-    background-color: #d3d3d3;
+    background-color: #005f6b; /* Azul escuro */
+    color: white;
     padding: 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
@@ -92,39 +98,40 @@ body, html {
 .list-content {
     flex-grow: 1;
     display: flex;
-    background-color: #f5f5f5;
+    background-color: #f4f4f4;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
     flex-direction: column;
-    max-height: 400px; /* Defina a altura máxima desejada */
-    overflow-y: auto; /* Adiciona a barra de rolagem vertical */
+    max-height: 460px;
+    overflow-y: auto;
+    border: 1px solid #cccccc;
 }
 
 .list-pacientes {
-    list-style-type: none; /* Remove os pontos padrão */
+    list-style-type: none;
     margin-left: 50px;
     margin-top: 10px;
     padding: 0;
 }
 
 .list-pacientes li {
-    padding-left: 20px; /* Espaço para o pseudo-elemento */
-    position: relative; /* Para o pseudo-elemento */
-    cursor: pointer; /* Altera o cursor para pointer quando sobrevoar itens */
+    padding-left: 20px;
+    position: relative;
+    cursor: pointer;
 }
 
 .list-pacientes li::before {
-    content: "•"; /* Adiciona o ponto da lista */
-    color: black; /* Define a cor do ponto */
-    position: absolute; /* Posição absoluta para o ponto */
-    left: 0; /* Alinha à esquerda */
-    top: 50%; /* Centraliza verticalmente */
-    transform: translateY(-50%); /* Ajusta a centralização */
-    font-size: 24px; /* Aumenta o tamanho do ponto */
+    content: "•";
+    color: #005f6b; /* Azul escuro */
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 24px;
 }
 
 .prioridade {
-    color:brown
+    color: #ff6b6b; /* Vermelho suave */
 }
 
 .sortable-ghost {
@@ -132,15 +139,15 @@ body, html {
 }
 
 .selected {
-    background-color: #a0c4ff; /* Azul acinzentado */
-    padding-left: 20px; /* Espaço para o pseudo-elemento */
-    margin-right: 80px; /* Adiciona a margem direita */
-    border-radius: 5px; /* Adiciona cantos arredondados */
+    background-color: #b2afff; /* Azul acinzentado */
+    padding-left: 20px;
+    margin-right: 80px;
+    border-radius: 5px;
 }
 
 .selected::before {
-    color: white; /* Altera a cor do ponto quando selecionado */
-    font-size: 24px; /* Mantém o tamanho do ponto quando selecionado */
+    color: white;
+    font-size: 24px;
 }
 
 .margin-bottom {
@@ -148,11 +155,13 @@ body, html {
     margin-bottom: 5%;
     width: 35%;
     max-width: 1200px;
-    justify-content: flex-end;
+    justify-content: space-between;
+    min-width: 350px;
 }
 
-.call-patient-button {
-    background-color: #d3d3d3;
+.delet-patient-button {
+    background-color: #005f6b; /* Azul escuro */
+    color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 20px;
@@ -160,15 +169,26 @@ body, html {
     margin-top: 20px;
 }
 
-.container-reset-button{
+.call-patient-button {
+    background-color: #005f6b; /* Azul escuro */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.container-reset-button {
     display: flex;
     justify-content: flex-end;
     width: 90%;
     margin-bottom: 5%;
 }
 
-.reset-button{
-    background-color: #d3d3d3;
+.reset-button {
+    background-color: #005f6b; /* Azul escuro */
+    color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 20px;

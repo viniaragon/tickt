@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pacientes</title>
+    <link rel="stylesheet" href="stylesChamada.css" type="text/css">
+</head>
+<header class="herderclass">
+    <div class="logo">
+        <!-- Coloque aqui o logotipo do consultório -->
+        <img src="logo.png" alt="Logotipo do Consultório de Imaginologia">
+    </div>
+    <h1 class="clinic-name">Consultório de Imagiologia XYZ</h1>
+    <div class="datetime"> <!-- Código JavaScript para exibir data e hora --> </div>
+</header>
+<main>
+    <div class="patient-call">
+        <h2>Chamada de Paciente</h2>
+        <p class="patient-name">Carregando...</p>
+        <p class="welcome-message">Por favor, dirija-se à sala 1</p>
+    </div>
+</main>
+<aside>
+    <h3>Pacientes em Espera</h3>
+    <ul class="patient-list">
+        <li><span class="patient-name">Maria Oliveira</span> - <span class="status waiting">Aguardando</span></li>
+        <li><span class="patient-name">Carlos Pereira</span> - <span class="status in-attendance">Em atendimento</span></li>
+    </ul>
+</aside>
+<footer>
+    <!-- aqui pode se colocar dados -->
+</footer>
+<button class="call-patient" id="callPatient" style="display:none"></button> 
+<script src="scripChamada.js"></script>
+</html>

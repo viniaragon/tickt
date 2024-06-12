@@ -1,0 +1,109 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h2 {
+    display: block;
+    font-size: 2.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    unicode-bidi: isolate;
+}
+
+header, footer {
+    background-color: #005f6b;
+    color: white;
+    padding: 1em;
+    text-align: center;
+}
+
+header .clinic-name, footer p {
+    margin: 0;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+}
+
+.logo {
+    text-align: center; /* Centraliza a imagem */
+    position:absolute;
+    left: 94%;
+    margin-top: 0px; /* Adiciona margem superior */
+}
+.logo img {
+    width: 50px; /* Ajusta o tamanho da imagem */
+    height: 50px; /* Ajusta o tamanho da imagem */
+}
+
+.herderclass{
+    display: flex;
+    flex-direction: column;
+}
+
+.datetime{
+    align-self: flex-start;
+}
+
+.patient-call {
+    text-align: center;
+    background-color: white;
+    padding: 2em;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.patient-call .patient-name {
+    font-size: 4em;
+    color: #008c76;
+    margin-block: 20px;
+}
+
+.welcome-message{
+    font-size: 2.0em;  
+    margin-block: 20px;  
+}
+
+.patient-list {
+    list-style: none;
+    padding: 0;
+}
+
+.patient-list li {
+    padding: 0.5em 0;
+}
+
+.patient-list .status {
+    font-weight: bold;
+}
+
+.patient-list .status.waiting {
+    color: #ff9800;
+}
+
+.patient-list .status.in-attendance {
+    color: #4caf50;
+}
+
+aside {
+    margin-top: 2em;
+    padding: 1em;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    margin-top: 2em;
+    padding: 2em;
+}

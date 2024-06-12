@@ -25,6 +25,7 @@ function saveData(data) {
 let data = loadData();
 
 app.use(express.static('public'));
+app.use(express.static('chamadaPage'));
 
 wss.on('connection', function connection(ws) {
     ws.send(JSON.stringify({ type: 'init', data }));
@@ -54,6 +55,16 @@ wss.on('connection', function connection(ws) {
                     data.selected = null;
                 }
                 break;
+                case 'call':
+                    const patient = parsedMessage.patient;
+                    const welcomeMessage = parsedMessage.message;
+                    // Envia o paciente chamado para todos os clientes conectados
+                    wss.clients.forEach(function each(client) {
+                        if (client.readyState === WebSocket.OPEN) {
+                            client.send(JSON.stringify({ type: 'call', patient, message: welcomeMessage }));
+                        }
+                    });
+                    break;
         }
 
         saveData(data);
