@@ -27,7 +27,6 @@ let data = loadData();
 app.use(express.static('public'));
 
 wss.on('connection', function connection(ws) {
-    // Enviar dados atuais para o novo cliente
     ws.send(JSON.stringify({ type: 'init', data }));
 
     ws.on('message', function incoming(message) {
@@ -46,11 +45,19 @@ wss.on('connection', function connection(ws) {
             case 'reorder':
                 data.items = parsedMessage.items;
                 break;
+            case 'reset':
+                data = { items: [], selected: null };
+                break;
+            case 'remove':
+                data.items = data.items.filter(item => item.text !== parsedMessage.item);
+                if (data.selected !== null && data.items[data.selected] && data.items[data.selected].text === parsedMessage.item) {
+                    data.selected = null;
+                }
+                break;
         }
 
         saveData(data);
 
-        // Envia a lista completa para todos os clientes conectados
         wss.clients.forEach(function each(client) {
             if (client.readyState === WebSocket.OPEN) {
                 client.send(JSON.stringify({ type: 'update', data }));
@@ -59,6 +66,6 @@ wss.on('connection', function connection(ws) {
     });
 });
 
-server.listen(8080, function listening() {
+server.listen(8080, '0.0.0.0', function listening() {
     console.log('Servidor WebSocket está ouvindo na porta 8080');
 });

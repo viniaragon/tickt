@@ -1,13 +1,9 @@
 {
     "items": [
         {
-            "text": "Carlos",
-            "priority": "normal"
-        },
-        {
-            "text": "Maria Joaquina",
-            "priority": "normal selected"
+            "text": "Genesio Jose",
+            "priority": "prioridade selected"
         }
     ],
-    "selected": 1
+    "selected": 0
 }
