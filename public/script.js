@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Seleção de elementos do DOM
     const normalButton = document.getElementById('normalButton');
     const priorityButton = document.getElementById('priorityButton');
     const resetButton = document.getElementById('resetButton');
@@ -9,13 +10,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const callPatientButton = document.querySelector('.call-patient-button');
     let selectedElement = null;
     
-    // Contadores
+    // Contadores para diferentes tipos de pacientes
     let contadorOrdenGeral = 0;
     let contadorOrdenNormal = 0;
     let contadorOrdemPriority = 0;
 
+    // Função para conectar ao WebSocket
     function connectWebSocket() {
-        const ws = new WebSocket('ws://192.168.0.4:8080'); // Substitua <IP_DA_MAQUINA> pelo IP da sua máquina
+        const ws = new WebSocket('wss://' + window.location.host); // Use wss:// para conexão segura
     
         ws.onopen = function() {
             console.log('Conexão WebSocket estabelecida.');
@@ -46,8 +48,10 @@ document.addEventListener("DOMContentLoaded", function() {
         return ws;
     }
     
+    // Inicializar WebSocket
     let ws = connectWebSocket();
 
+    // Função para processar mensagens recebidas via WebSocket
     function processMessage(data) {
         const message = JSON.parse(data);
         switch (message.type) {
@@ -77,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // Adicionar eventos aos botões
     normalButton.addEventListener('click', function() {
         addItem('normal');
     });
@@ -128,6 +133,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Função para adicionar item à lista
     function addItem(priority) {
         const inputValue = inputField.value.trim();
         if (inputValue === '') {
@@ -159,6 +165,7 @@ document.addEventListener("DOMContentLoaded", function() {
         inputField.value = '';
     }
 
+    // Função para adicionar item na interface da lista
     function addListItem(text, priority) {
         const listItem = document.createElement('li');
         listItem.textContent = text;
@@ -167,6 +174,7 @@ document.addEventListener("DOMContentLoaded", function() {
         listPacientes.appendChild(listItem);
     }
 
+    // Função para alternar a seleção de itens na lista
     function toggleSelect(event) {
         const listItem = event.target;
 
@@ -185,6 +193,7 @@ document.addEventListener("DOMContentLoaded", function() {
         event.stopPropagation(); // Impede que o evento clique se propague para o div .list-content
     }
 
+    // Função para selecionar item na lista
     function selectListItem(index, sendToServer) {
         if (selectedElement) {
             selectedElement.classList.remove('selected');
@@ -205,6 +214,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // Função para deselecionar item na lista
     function deselectListItem(sendToServer) {
         if (selectedElement) {
             selectedElement.classList.remove('selected');
@@ -222,6 +232,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // Função para inicializar a lista com dados recebidos via WebSocket
     function initializeList(data) {
         // Limpar lista existente antes de inicializar
         listPacientes.innerHTML = '';
@@ -238,10 +249,12 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // Função para atualizar a lista com novos dados
     function updateList(data) {
         listPacientes.innerHTML = '';
         selectedElement = null;  // Resetar o elemento selecionado
     
+        // Resetar contadores
         contadorOrdenGeral = 0;
         contadorOrdenNormal = 0;
         contadorOrdemPriority = 0;
@@ -272,6 +285,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    // Função para resetar a lista
     function resetList() {
         listPacientes.innerHTML = '';
         selectedElement = null;
@@ -281,6 +295,7 @@ document.addEventListener("DOMContentLoaded", function() {
         contadorOrdemPriority = 0;
     }
 
+    // Função para atualizar seleção no servidor
     function updateSelectionOnServer(index) {
         if (ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify({ type: 'select', index }));
@@ -346,6 +361,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
     
+    // Função para recalcular índices dos itens após a reorganização
     function recalculateIndices(items) {
         let contadorOrdenGeral = 0;
         let contadorOrdenNormal = 0;
@@ -377,12 +393,11 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Evento de arrastar para monitorar o início do arrasto
+    // Eventos de arrastar e soltar para monitorar o início e fim do arrasto
     listContent.addEventListener('dragstart', function(event) {
         event.dataTransfer.setData('text/plain', event.target.textContent);
     });
 
-    // Evento de soltar para detectar se o item foi solto fora do contêiner
     document.addEventListener('drop', function(event) {
         event.preventDefault();
         const listContentRect = listContent.getBoundingClientRect();

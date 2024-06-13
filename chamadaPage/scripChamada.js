@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const callPatientButton = document.getElementById('callPatient');
 
     function connectWebSocket() {
-        const ws = new WebSocket('ws://192.168.0.4:8080'); // Substitua <IP_DA_MAQUINA> pelo IP da sua máquina
+        const ws = new WebSocket('wss://' + window.location.host); // Use wss:// para conexão segura
 
         ws.onopen = function() {
             console.log('Conexão WebSocket estabelecida.');

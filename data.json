@@ -1,21 +1,9 @@
 {
     "items": [
         {
-            "text": "1 N1 Vinicius Ribeiro Aragão de Almeida",
-            "priority": "normal"
-        },
-        {
-            "text": "2 P1 Aaron Ribeiro Salvatierra",
-            "priority": "prioridade"
-        },
-        {
-            "text": "3 N2 Sandy Salvatierra Cuellar",
-            "priority": "normal"
-        },
-        {
-            "text": "4 N3 Rosario",
+            "text": "1 N1 carlis",
             "priority": "normal"
         }
     ],
-    "selected": 3
+    "selected": 0
 }
